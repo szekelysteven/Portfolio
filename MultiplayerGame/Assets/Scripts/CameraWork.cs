@@ -1,0 +1,160 @@
+using UnityEngine;
+
+
+namespace Com.MyCompany.MyGame
+{
+    /// <summary>
+    /// Camera work. Follow a target
+    /// </summary>
+    public class CameraWork : MonoBehaviour
+    {
+        #region Private Fields
+
+        [Tooltip("The distance in the local x-z plane to the target")]
+        [SerializeField]
+        private float distance = 7.0f;
+
+        [Tooltip("The height we want the camera to be above the target")]
+        [SerializeField]
+        private float height = 3.0f;
+
+        [Tooltip("Allow the camera to be offseted vertically from the target, for example giving more view of the sceneray and less ground.")]
+        [SerializeField]
+        private Vector3 centerOffset = Vector3.zero;
+
+        [Tooltip("Set this as false if a component of a prefab being instanciated by Photon Network, and manually call OnStartFollowing() when and if needed.")]
+        [SerializeField]
+        private bool followOnStart = false;
+
+        [Tooltip("The Smoothing for the camera to follow the target")]
+        [SerializeField]
+        private float smoothSpeed = 0.125f;
+
+        [SerializeField]
+        private float mouseSensitivity = 250;
+
+        [SerializeField]
+        public Transform virtualCamera;
+
+        // cached transform of the target
+        Transform cameraTransform;
+
+        //create a vector variable to help change camera rotation and ignore y from camera follow
+        Vector3 cameraTransformNew = Vector3.zero;
+        
+        
+        // maintain a flag internally to reconnect if target is lost or camera is switched
+        bool isFollowing;
+
+        // Cache for camera offset
+        Vector3 cameraOffset = Vector3.zero;
+
+        //get animator
+
+        //get animator reference to turn player model with camera       
+        Animator animator;
+
+        #endregion
+
+        #region MonoBehaviour Callbacks
+
+        /// <summary>
+        /// MonoBehaviour method called on GameObject by Unity during initialization phase
+        /// </summary>
+        void Start()
+        {
+            animator = GetComponent<Animator>();
+            cameraTransform = Camera.main.transform;
+        }
+
+
+        void LateUpdate()
+        {
+            PlayerRotateCamera();
+            AttachToVirtualCamera();
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// Raises the start following event.
+        /// Use this when you don't know at the time of editing what to follow, typically instances managed by the photon network.
+        /// </summary>
+        public void OnStartFollowing()
+        {
+            
+           
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Follow the target smoothly
+        /// </summary>
+        void AttachToVirtualCamera()
+        {
+           
+
+            cameraTransform.position = Vector3.Lerp(cameraTransform.position, virtualCamera.position, smoothSpeed * Time.deltaTime);
+
+      
+
+
+        }
+
+        void PlayerRotateCamera()
+        {
+            //Allow player to control y-axis of camera seperate from player script
+            //Set restrictions for camera y movement
+
+            float rotateHorizontal = Input.GetAxis("Mouse X");
+            float rotateVertical = Input.GetAxis("Mouse Y");
+            Debug.Log("" + rotateVertical);
+            Debug.Log("" + rotateHorizontal);
+
+
+           //// if (virtualCamera.localRotation.x >= -0.385 && virtualCamera.localRotation.x <= 0.385)
+           // {
+                //virtualCamera.Rotate(Vector3.right * rotateVertical * (mouseSensitivity * Time.deltaTime));
+            //}
+
+            //if (virtualCamera.localRotation.x <= -0.385)
+           // {
+              //  virtualCamera.Rotate(Vector3.right * -rotateVertical * (mouseSensitivity * Time.deltaTime));
+
+           // }
+           // if (virtualCamera.localRotation.x >= 0.385)
+           // {
+               // virtualCamera.Rotate(Vector3.right * -rotateVertical * (mouseSensitivity * Time.deltaTime));
+
+          //  }
+            
+
+            animator.transform.Rotate(Vector3.up * rotateHorizontal * (250f * Time.deltaTime));
+            //virtualCamera.Rotate(Vector3.up * rotateHorizontal * (250f * Time.deltaTime));
+            //animator.transform.Rotate(Vector3.right * rotateVertical * (250f * Time.deltaTime));
+            virtualCamera.Rotate(Vector3.right * rotateVertical * (250f * Time.deltaTime));
+
+            
+
+            //need to ignore y axis rotation to allow player control
+
+
+
+            //it just works!
+
+
+
+        }
+
+
+
+
+       
+        #endregion
+    }
+}
