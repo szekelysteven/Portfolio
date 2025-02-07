@@ -34,7 +34,7 @@ namespace Com.MyCompany.MyGame
         private float mouseSensitivity = 250;
 
         [SerializeField]
-        public Transform virtualCamera;
+        public Transform virtualCameraTransform;
 
         // cached transform of the target
         Transform cameraTransform;
@@ -49,8 +49,9 @@ namespace Com.MyCompany.MyGame
         // Cache for camera offset
         Vector3 cameraOffset = Vector3.zero;
 
-        //get animator
-
+        //get reference for play model
+        [SerializeField]
+        public Transform playerModel;
         //get animator reference to turn player model with camera       
         Animator animator;
 
@@ -70,6 +71,8 @@ namespace Com.MyCompany.MyGame
 
         void LateUpdate()
         {
+            cameraTransform.LookAt(playerModel);
+            virtualCameraTransform.LookAt(playerModel);
             PlayerRotateCamera();
             AttachToVirtualCamera();
         }
@@ -99,7 +102,7 @@ namespace Com.MyCompany.MyGame
         {
            
 
-            cameraTransform.position = Vector3.Lerp(cameraTransform.position, virtualCamera.position, smoothSpeed * Time.deltaTime);
+            cameraTransform.position = Vector3.Lerp(cameraTransform.position, virtualCameraTransform.position, smoothSpeed * Time.deltaTime);
 
       
 
@@ -117,7 +120,7 @@ namespace Com.MyCompany.MyGame
             Debug.Log("" + rotateHorizontal);
 
 
-           //// if (virtualCamera.localRotation.x >= -0.385 && virtualCamera.localRotation.x <= 0.385)
+           //// if (virtualCameraTransform.localRotation.x >= -0.385 && virtualCameraTransform.localRotation.x <= 0.385)
            // {
                 //virtualCamera.Rotate(Vector3.right * rotateVertical * (mouseSensitivity * Time.deltaTime));
             //}
@@ -137,7 +140,7 @@ namespace Com.MyCompany.MyGame
             animator.transform.Rotate(Vector3.up * rotateHorizontal * (250f * Time.deltaTime));
             //virtualCamera.Rotate(Vector3.up * rotateHorizontal * (250f * Time.deltaTime));
             //animator.transform.Rotate(Vector3.right * rotateVertical * (250f * Time.deltaTime));
-            virtualCamera.Rotate(Vector3.right * rotateVertical * (250f * Time.deltaTime));
+            virtualCameraTransform.Rotate(Vector3.right * rotateVertical * (250f * Time.deltaTime));
 
             
 
