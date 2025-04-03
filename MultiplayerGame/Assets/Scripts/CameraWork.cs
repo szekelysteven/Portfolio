@@ -52,20 +52,24 @@ namespace Com.MyCompany.MyGame
         //get reference for play model
         [SerializeField]
         public Transform playerModel;
-        //get animator reference to turn player model with camera       
+        //define animator reference to help turn player model with camera       
         Animator animator;
 
+        //radius for camera orbit
+        public float radius = 5f;
         #endregion
 
         #region MonoBehaviour Callbacks
 
-        /// <summary>
-        /// MonoBehaviour method called on GameObject by Unity during initialization phase
-        /// </summary>
+
         void Start()
         {
             animator = GetComponent<Animator>();
             cameraTransform = Camera.main.transform;
+
+            //defines the player model as a point to rotate around with camera
+            transform.position = (transform.position - playerModel.position).normalized * radius + playerModel.position;
+
         }
 
 
@@ -81,37 +85,27 @@ namespace Com.MyCompany.MyGame
 
         #region Public Methods
 
-        /// <summary>
-        /// Raises the start following event.
-        /// Use this when you don't know at the time of editing what to follow, typically instances managed by the photon network.
-        /// </summary>
+    
         public void OnStartFollowing()
         {
-            
-           
+
+
         }
 
         #endregion
 
         #region Private Methods
 
-        /// <summary>
-        /// Follow the target smoothly
-        /// </summary>
+        
         void AttachToVirtualCamera()
         {
-           
-
             cameraTransform.position = Vector3.Lerp(cameraTransform.position, virtualCameraTransform.position, smoothSpeed * Time.deltaTime);
-
-      
-
-
         }
+
 
         void PlayerRotateCamera()
         {
-            //Allow player to control y-axis of camera seperate from player script
+            //Allow player to control y-axis and x-axis of camera seperate from player script
             //Set restrictions for camera y movement
 
             float rotateHorizontal = Input.GetAxis("Mouse X");
@@ -119,30 +113,24 @@ namespace Com.MyCompany.MyGame
             Debug.Log("" + rotateVertical);
             Debug.Log("" + rotateHorizontal);
 
+            //rotates camera around x-axis using mouse input, sensitivity, and player position
+            //virtualCameraTransform.RotateAround(playerModel.position, Vector3.up, rotateHorizontal * 250 * Time.deltaTime);
 
-           //// if (virtualCameraTransform.localRotation.x >= -0.385 && virtualCameraTransform.localRotation.x <= 0.385)
-           // {
-                //virtualCamera.Rotate(Vector3.right * rotateVertical * (mouseSensitivity * Time.deltaTime));
-            //}
-
-            //if (virtualCamera.localRotation.x <= -0.385)
-           // {
-              //  virtualCamera.Rotate(Vector3.right * -rotateVertical * (mouseSensitivity * Time.deltaTime));
-
-           // }
-           // if (virtualCamera.localRotation.x >= 0.385)
-           // {
-               // virtualCamera.Rotate(Vector3.right * -rotateVertical * (mouseSensitivity * Time.deltaTime));
-
-          //  }
-            
+            //rotates camera around y-axis using mouse input, sensitivity, and player position
+            virtualCameraTransform.RotateAround(playerModel.position, Vector3.right, rotateVertical * 250 * Time.deltaTime);
 
             animator.transform.Rotate(Vector3.up * rotateHorizontal * (250f * Time.deltaTime));
-            //virtualCamera.Rotate(Vector3.up * rotateHorizontal * (250f * Time.deltaTime));
-            //animator.transform.Rotate(Vector3.right * rotateVertical * (250f * Time.deltaTime));
-            virtualCameraTransform.Rotate(Vector3.right * rotateVertical * (250f * Time.deltaTime));
+            //virtualCameraTransform.Rotate(Vector3.up * rotateHorizontal * (250f * Time.deltaTime));
+            //cameraTransform.Rotate(Vector3.up * rotateHorizontal * (250f * Time.deltaTime));
 
-            
+
+
+
+
+            //animator.transform.Rotate(Vector3.right * rotateVertical * (250f * Time.deltaTime));
+            //virtualCameraTransform.Rotate(Vector3.right * rotateVertical * (250f * Time.deltaTime));
+            //cameraTransform.Rotate(Vector3.right * rotateVertical * (250f * Time.deltaTime));
+
 
             //need to ignore y axis rotation to allow player control
 
@@ -161,3 +149,45 @@ namespace Com.MyCompany.MyGame
         #endregion
     }
 }
+
+
+
+
+/*
+using UnityEngine;
+
+public class Orbit : MonoBehaviour
+{
+    public Transform center;
+    public float rotationSpeed = 10f;
+    public float radius = 5f;
+
+    void Start()
+    {
+        //Optional: Set initial position on a circle
+        transform.position = (transform.position - playerModel.position).normalized * radius + center.position;
+    }
+
+    void Update()
+    {
+        transform.RotateAround(playerModel.position, Vector3.up, rotationSpeed * Time.deltaTime);
+    }
+}
+
+   //// if (virtualCameraTransform.localRotation.x >= -0.385 && virtualCameraTransform.localRotation.x <= 0.385)
+           // {
+                //virtualCamera.Rotate(Vector3.right * rotateVertical * (mouseSensitivity * Time.deltaTime));
+            //}
+
+            //if (virtualCamera.localRotation.x <= -0.385)
+           // {
+              //  virtualCamera.Rotate(Vector3.right * -rotateVertical * (mouseSensitivity * Time.deltaTime));
+
+           // }
+           // if (virtualCamera.localRotation.x >= 0.385)
+           // {
+               // virtualCamera.Rotate(Vector3.right * -rotateVertical * (mouseSensitivity * Time.deltaTime));
+
+          //  }
+
+*/
