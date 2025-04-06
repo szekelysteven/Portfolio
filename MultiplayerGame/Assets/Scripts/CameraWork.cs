@@ -64,6 +64,9 @@ namespace Com.MyCompany.MyGame
 
         void Start()
         {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+
             animator = GetComponent<Animator>();
             cameraTransform = Camera.main.transform;
 
@@ -76,7 +79,7 @@ namespace Com.MyCompany.MyGame
         void LateUpdate()
         {
             cameraTransform.LookAt(playerModel);
-            virtualCameraTransform.LookAt(playerModel);
+            //virtualCameraTransform.LookAt(playerModel);
             PlayerRotateCamera();
             AttachToVirtualCamera();
         }
@@ -107,7 +110,7 @@ namespace Com.MyCompany.MyGame
         {
             //Allow player to control y-axis and x-axis of camera seperate from player script
             //Set restrictions for camera y movement
-
+            
             float rotateHorizontal = Input.GetAxis("Mouse X");
             float rotateVertical = Input.GetAxis("Mouse Y");
             Debug.Log("" + rotateVertical);
@@ -117,8 +120,10 @@ namespace Com.MyCompany.MyGame
             //virtualCameraTransform.RotateAround(playerModel.position, Vector3.up, rotateHorizontal * 250 * Time.deltaTime);
 
             //rotates camera around y-axis using mouse input, sensitivity, and player position
-            virtualCameraTransform.RotateAround(playerModel.position, Vector3.right, rotateVertical * 250 * Time.deltaTime);
-
+            if (Input.GetKey(KeyCode.LeftControl))
+            {
+                virtualCameraTransform.RotateAround(playerModel.position, Vector3.right, -rotateVertical * 250 * Time.deltaTime);
+            }
             animator.transform.Rotate(Vector3.up * rotateHorizontal * (250f * Time.deltaTime));
             //virtualCameraTransform.Rotate(Vector3.up * rotateHorizontal * (250f * Time.deltaTime));
             //cameraTransform.Rotate(Vector3.up * rotateHorizontal * (250f * Time.deltaTime));
