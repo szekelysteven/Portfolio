@@ -36,6 +36,10 @@ namespace Com.MyCompany.MyGame
         [SerializeField]
         public Transform virtualCameraTransform;
 
+        [SerializeField]
+        public Transform center;
+
+
         // cached transform of the target
         Transform cameraTransform;
 
@@ -78,7 +82,7 @@ namespace Com.MyCompany.MyGame
 
         void LateUpdate()
         {
-            cameraTransform.LookAt(playerModel);
+            cameraTransform.LookAt(center);
             //virtualCameraTransform.LookAt(playerModel);
             PlayerRotateCamera();
             AttachToVirtualCamera();
