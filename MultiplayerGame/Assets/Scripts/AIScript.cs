@@ -1,3 +1,7 @@
+//Steven Szekely
+//4/21/2025
+
+
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -56,16 +60,27 @@ public class AIScript : MonoBehaviour
         switch (currentState)
         {
             case AIState.Idle:
+
                 Timer();
                 Idle();
+                aiAnimator.SetBool("isIdle", true);
+                aiAnimator.SetBool("isAttacking", false);
+                aiAnimator.SetBool("isWalking", false);
+                //if statement to get the ai to patrol when destination is farther than a magnitude of 2
                 if ((aiModel.transform.position - aiModel.destination).magnitude > 2)
                 {
                     currentState = AIState.Patrol;
                 }
                 break;
+
             case AIState.Patrol:
+
                 Timer();
                 Patrol();
+                aiAnimator.SetBool("isIdle", false);
+                aiAnimator.SetBool("isAttacking", false);
+                aiAnimator.SetBool("isWalking", true);
+                //if statement to get the ai to idle when destination is reached within a magnitude of 2
                 if ((aiModel.transform.position - aiModel.destination).magnitude < 2)
                 {
                     currentState = AIState.Idle;
@@ -75,22 +90,25 @@ public class AIScript : MonoBehaviour
                 break;
 
             case AIState.Attacking:
+
                 Attacking();
                 
                 //if enemy becomes more than 2 magnitude in distance, then switch animation to walking and close gap. once gap is closed change back to fighting animation
-                //might be good to add running state here
+                //might be good to add a chase state
                 if ((aiModel.transform.position - aiModel.destination).magnitude > 2)
                 {
                     aiAnimator.SetBool("isIdle", false);
                     aiAnimator.SetBool("isAttacking", false);
-                    aiAnimator.SetBool("isDancing", true);
+                    aiAnimator.SetBool("isWalking", true);
                     aiModel.destination = enemy.transform.position;
                 }
                 else
                 {
                     aiAnimator.SetBool("isIdle", false);
                     aiAnimator.SetBool("isAttacking", true);
-                    aiAnimator.SetBool("isDancing", false);
+                    aiAnimator.SetBool("isWalking", false);
+                    //set destination to current position to stop shaking of ai
+                    //aiModel.destination = aiModel.transform.position;
                 }
                     break;
         }
@@ -101,7 +119,6 @@ public class AIScript : MonoBehaviour
         //Generate random waypoint
         randomWaypoint = Random.Range(0, waypoints.Length);
         randomizeTrigger = timer + randomizeDuration;
-        currentState = AIState.Patrol;
     }
     
     public void Timer()
@@ -110,6 +127,7 @@ public class AIScript : MonoBehaviour
         if (timer >= randomizeTrigger)
         {
             Randomize();
+            currentState = AIState.Patrol;
         }
     }
 
@@ -118,7 +136,7 @@ public class AIScript : MonoBehaviour
         
         aiAnimator.SetBool("isIdle", true);
         aiAnimator.SetBool("isAttacking", false);
-        aiAnimator.SetBool("isDancing", false);
+        aiAnimator.SetBool("isWalking", false);
     }
 
     public void Patrol()
@@ -150,10 +168,10 @@ public class AIScript : MonoBehaviour
        if (other.transform.tag == "Enemy")
         {
             enemy = other.gameObject;
-            Attacking();
             currentState = AIState.Attacking;
-            aiModel.destination = enemy.transform.position;
+            
         }
 
     }
+
 }

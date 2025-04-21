@@ -4401,7 +4401,7 @@ MonoBehaviour:
   other: {fileID: 0}
   aiAnimator: {fileID: 0}
   timer: 0
-  randomizeDuration: 20
+  randomizeDuration: 10
   randomizeTrigger: 0
   waypoints:
   - {fileID: 1049698837}
@@ -4423,7 +4423,7 @@ NavMeshAgent:
   m_Speed: 10
   m_Acceleration: 20
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 360
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -4679,7 +4679,7 @@ NavMeshAgent:
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 360
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
