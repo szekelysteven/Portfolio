@@ -117,8 +117,7 @@ namespace Com.MyCompany.MyGame
             
             float rotateHorizontal = Input.GetAxis("Mouse X");
             float rotateVertical = Input.GetAxis("Mouse Y");
-            Debug.Log("" + rotateVertical);
-            Debug.Log("" + rotateHorizontal);
+            
 
             //rotates camera around x-axis using mouse input, sensitivity, and player position
             //virtualCameraTransform.RotateAround(playerModel.position, Vector3.up, rotateHorizontal * 250 * Time.deltaTime);
