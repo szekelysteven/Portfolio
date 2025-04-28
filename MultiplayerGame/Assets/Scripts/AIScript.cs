@@ -10,7 +10,8 @@ public enum AIState
 {
     Idle,
     Patrol,
-    Attacking
+    Attacking,
+    Chasing
 }
 
 public class AIScript : MonoBehaviour
@@ -63,9 +64,7 @@ public class AIScript : MonoBehaviour
 
                 Timer();
                 Idle();
-                aiAnimator.SetBool("isIdle", true);
-                aiAnimator.SetBool("isAttacking", false);
-                aiAnimator.SetBool("isWalking", false);
+               
                 //if statement to get the ai to patrol when destination is farther than a magnitude of 2
                 if ((aiModel.transform.position - aiModel.destination).magnitude > 2)
                 {
@@ -77,9 +76,7 @@ public class AIScript : MonoBehaviour
 
                 Timer();
                 Patrol();
-                aiAnimator.SetBool("isIdle", false);
-                aiAnimator.SetBool("isAttacking", false);
-                aiAnimator.SetBool("isWalking", true);
+                
                 //if statement to get the ai to idle when destination is reached within a magnitude of 2
                 if ((aiModel.transform.position - aiModel.destination).magnitude < 2)
                 {
@@ -97,20 +94,28 @@ public class AIScript : MonoBehaviour
                 //might be good to add a chase state
                 if ((aiModel.transform.position - aiModel.destination).magnitude > 2)
                 {
-                    aiAnimator.SetBool("isIdle", false);
-                    aiAnimator.SetBool("isAttacking", false);
-                    aiAnimator.SetBool("isWalking", true);
-                    aiModel.destination = enemy.transform.position;
+                    currentState = AIState.Chasing;
                 }
                 else
                 {
-                    aiAnimator.SetBool("isIdle", false);
-                    aiAnimator.SetBool("isAttacking", true);
-                    aiAnimator.SetBool("isWalking", false);
-                    //set destination to current position to stop shaking of ai
-                    //aiModel.destination = aiModel.transform.position;
+                    currentState = AIState.Attacking;
                 }
                     break;
+
+            case AIState.Chasing:
+
+                Chasing();
+                
+
+                if ((aiModel.transform.position - aiModel.destination).magnitude < 2)
+                {
+                    currentState = AIState.Attacking;
+                }
+                else
+                {
+                    currentState = AIState.Chasing;
+                }
+                break;
         }
     }
 
@@ -145,8 +150,9 @@ public class AIScript : MonoBehaviour
 
 
         aiModel.destination = waypoints[randomWaypoint].transform.position;
+        aiModel.transform.LookAt(aiModel.destination);
         aiAnimator.SetBool("isIdle", false);
-        aiAnimator.SetBool("isAttacking", false);
+        aiAnimator.SetBool("isWalking", false);
         aiAnimator.SetBool("isDancing", true);
     }
 
@@ -154,9 +160,19 @@ public class AIScript : MonoBehaviour
     {
         
         aiAnimator.SetBool("isIdle", false);
-        aiAnimator.SetBool("isDancing", false);
+        aiAnimator.SetBool("isWalking", false);
         aiAnimator.SetBool("isAttacking", true);
         aiModel.destination = enemy.transform.position;
+        aiModel.transform.LookAt(enemy.transform);
+    }
+
+    public void Chasing()
+    {
+        aiAnimator.SetBool("isIdle", false);
+        aiAnimator.SetBool("isAttacking", false);
+        aiAnimator.SetBool("isWalking", true);
+        aiModel.destination = enemy.transform.position;
+        aiModel.transform.LookAt(enemy.transform);
     }
 
     //character attacks when a collision is detected. new destination will be the enemy being attacked. 
